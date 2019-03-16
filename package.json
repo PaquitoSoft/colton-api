@@ -1,0 +1,19 @@
+{
+  "name": "colton-api",
+  "version": "1.0.0",
+  "description": "Colton music app back-end API",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./src/server.js"
+  },
+  "author": "Paquitosoft",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.4.8",
+    "graphql": "^14.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.15.2",
+    "nodemon": "^1.18.10"
+  }
+}
