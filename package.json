@@ -10,7 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.4.8",
-    "graphql": "^14.1.1"
+    "boom": "^7.3.0",
+    "graphql": "^14.1.1",
+    "jsonwebtoken": "^8.5.0",
+    "mongodb": "^3.1.13"
   },
   "devDependencies": {
     "eslint": "^5.15.2",

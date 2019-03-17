@@ -1,34 +1,20 @@
 const { ApolloServer, gql } = require('apollo-server');
+const types = require('./types');
 
-const books = [
-    {
-        title: 'Harry Potter and the Chamber of Secrets',
-        author: 'J.K. Rowling'
-    },
-    {
-        title: 'Jurassic Park',
-        author: 'Michael Crichton',
-    }
-];
+const typeDefs = types.getTypesDefinitions();
+const resolvers = types.getTypesResolvers();
 
-const typeDefs = gql`
-    type Book {
-        title: String
-        author: String
-    }
+const server = new ApolloServer({ 
+    typeDefs, 
+    resolvers,
+    context: ({ req }) => {
+        const authToken = req.headers.authorization;
 
-    type Query {
-        books: [Book]
-    }
-`;
-
-const resolvers = {
-    Query: {
-        books: () => books
-    }
-};
-
-const server = new ApolloServer({ typeDefs, resolvers });
+        return {
+            user: {}
+        };
+    } 
+});
 
 server.listen()
     .then(({ url }) => {
