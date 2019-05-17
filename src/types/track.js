@@ -50,7 +50,7 @@ const resolvers = {
 
 
 module.exports = {
-    resolvers,
     typeName,
-    typeDefinition
+    typeDefinition,
+    resolvers
 };

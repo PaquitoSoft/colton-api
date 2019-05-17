@@ -1,4 +1,5 @@
 const { gql } = require("apollo-server");
+const UserModel = require('../data-providers/repository/models/user-model');
 
 /*
 {
@@ -62,9 +63,27 @@ const typeDefinition = gql`
     }
 `;
 
-async function getUser(root, params, context) {}
+async function getUser(root, params, context) {
+    console.log('Types::User::getUser# TODO loading user...');
+    return {
+        id: 'asdjkasdhjk',
+        email: 'rollo@tomas.si',
+        nickname: 'Rollo Tomassi'
+    };
+}
 async function createUser(root, params, context) {}
 async function updateUser(root, params, context) {}
+async function login(root, params, context) {
+    console.log('Types::User::login# Processing login mutation...');
+    const { email, password } = params;
+
+    const user = UserModel.validateCredentials(email, password);
+
+    console.log('UserType::login# user:', user);
+
+    return user;
+}
+async function logout(root, params, context) {}
 
 const resolvers = {
     type: {
@@ -75,7 +94,9 @@ const resolvers = {
     },
     mutations: {
         createUser,
-        updateUser
+        updateUser,
+        login,
+        logout
     }
 };
 

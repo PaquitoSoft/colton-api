@@ -7,10 +7,6 @@ const types = [
     require('./playlist')
 ];
 
-// types.map(type => {
-//     console.log(type.typeDefinition);
-// })
-
 module.exports.getTypesDefinitions = () => [
     gql`
         type Query {
@@ -24,17 +20,17 @@ module.exports.getTypesDefinitions = () => [
 ];
 
 module.exports.getTypesResolvers = () => {
-    types.reduce((finalResolvers, type) => {
+    return types.reduce((finalResolvers, type) => {
         if (type.resolvers) {
             const { type: _type, queries, mutations } = type.resolvers;
 
             _type && (finalResolvers[type.typeName] = _type);
             queries && (finalResolvers.Query = { ...finalResolvers.Query, ...queries });
-            mutations && (finalResolvers.Mutations = { ...finalResolvers.Mutations, ...mutations });
+            mutations && (finalResolvers.Mutation = { ...finalResolvers.Mutation, ...mutations });
         }
         return finalResolvers;
     }, {
         Query: {},
-        Mutations: {}
+        Mutation: {}
     });
 };
