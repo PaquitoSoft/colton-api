@@ -8,8 +8,8 @@ const types = require('./types');
 const MONGO_URL = process.env.COLTON_MONGODB_URL || 'mongodb://colton2:DStoma23@ds029817.mongolab.com:29817/colton-dev';
 const AUTH_SIGNATURE = process.env.COLTON_AUTH_SIGNATURE || 'fjasdfhjdgsfjasdfjgsadfhdvschkjas';
 
-const schema = makeExecutableSchema({ 
-    typeDefs: types.getTypesDefinitions(), 
+const schema = makeExecutableSchema({
+    typeDefs: types.getTypesDefinitions(),
     resolvers: types.getTypesResolvers()
 });
 
