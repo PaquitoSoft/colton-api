@@ -1,5 +1,13 @@
 const { gql } = require("apollo-server");
-const UserModel = require('../data-providers/repository/models/user-model');
+const Boom = require('@hapi/boom');
+const jwt = require('jsonwebtoken');
+
+const createLoginAction = require('../../../application/actions/user/login');
+const createGetUserPlaylistsAction = require('../../../application/actions/playlist/get-user-playlists');
+const {
+    repositoriesTypes,
+    createMongooseRepository
+} = require('../../../adapters/repositories/repositories-factory');
 
 /*
 {
@@ -50,6 +58,11 @@ const typeDefinition = gql`
         preferredAudioQuality: AudioQuality!        
     }
 
+    type LoginResponse {
+        user: User!,
+        authToken: String!
+    }
+
     extend type Query {
         getUser(userId: ID!): User
         getUserPlaylists(userId: ID!): [${Playlist}]
@@ -58,36 +71,58 @@ const typeDefinition = gql`
     extend type Mutation {
         createUser(user: NewUser): User
         updateUser(user: UpdateUser): User
-        login(email: String!, password: String!): User
+        login(email: String!, password: String!): LoginResponse
         logout(accessToken: String!): Boolean
     }
 `;
 
-async function getUser(root, params, context) {
-    console.log('Types::User::getUser# TODO loading user...');
-    return {
-        id: 'asdjkasdhjk',
-        email: 'rollo@tomas.si',
-        nickname: 'Rollo Tomassi'
-    };
-}
+async function getUser(root, params, context) {}
 async function createUser(root, params, context) {}
 async function updateUser(root, params, context) {}
-async function login(root, params, context) {
+
+async function login(root, params, { mongoose, authSignature }) {
     console.log('Types::User::login# Processing login mutation...');
     const { email, password } = params;
+    const loginAction = createLoginAction({
+        userRepository: createMongooseRepository({
+            repositoryType: repositoriesTypes.User,
+            mongoose
+        })
+    });
 
-    const user = UserModel.validateCredentials(email, password);
+    try {
+        const user = await loginAction({ email, password });
 
-    console.log('UserType::login# user:', user);
+        if (!user) {
+            throw Boom.notFound(`User ${email} not found`);
+        }
 
-    return user;
+        return {
+            user,
+            authToken: jwt.sign(user.id, authSignature)
+        };
+    } catch (error) {
+        throw Boom.unauthorized('Invalid credentials');
+    }
 }
+
 async function logout(root, params, context) {}
 
 const resolvers = {
     type: {
-        id: root => root._id || root.id
+        id: root => root._id || root.id,
+        playlists: (root, args, { mongoose }) => {
+            const getUserPlaylistsAction = createGetUserPlaylistsAction({
+                playlistRepository: createMongooseRepository({
+                    repositoryType: repositoriesTypes.Playlist,
+                    mongoose
+                })
+            });
+
+            return getUserPlaylistsAction({
+                userEmail: root.email
+            });
+        }
     },
     queries: {
         getUser

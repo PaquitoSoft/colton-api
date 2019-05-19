@@ -35,16 +35,14 @@ function buildUserSchema(MongooseSchema) {
     userSchema.statics.validateCredentials = async function validateCredentials(email, password) {
         const user = await this.findOne({ email: new RegExp(email, 'iu') }).exec();
 
-        if (!user) {
-            throw new Error(`User ${email} not found`);
-        }
-
         if (user.password !== encryptPassword(password, user.salt)) {
             throw new Error('Invalid credentials');
         }
 
         return user;
     };
+
+    return userSchema;
 }
 
 module.exports.buildUserSchema = buildUserSchema;

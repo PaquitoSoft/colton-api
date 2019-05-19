@@ -1,4 +1,4 @@
-const actionBuilder = ({ userRepository }) => ({ email, password }) =>
+const createLoginAction = ({ userRepository }) => ({ email, password }) =>
     userRepository.validateCredentials(email, password);
 
-module.exports.actionBuilder = actionBuilder;
+module.exports = createLoginAction;
