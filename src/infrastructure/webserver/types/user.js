@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 const createLoginAction = require('../../../application/actions/user/login');
 const createGetUserPlaylistsAction = require('../../../application/actions/playlist/get-user-playlists');
 const {
-    repositoriesTypes,
-    createMongooseRepository
+	repositoriesTypes,
+	createMongooseRepository
 } = require('../../../adapters/repositories/repositories-factory');
 
 /*
@@ -55,7 +55,7 @@ const typeDefinition = gql`
     input UpdateUser {
         email: String!
         nickname: String!
-        preferredAudioQuality: AudioQuality!        
+        preferredAudioQuality: AudioQuality!
     }
 
     type LoginResponse {
@@ -65,7 +65,6 @@ const typeDefinition = gql`
 
     extend type Query {
         getUser(userId: ID!): User
-        getUserPlaylists(userId: ID!): [${Playlist}]
     }
 
     extend type Mutation {
@@ -81,62 +80,62 @@ async function createUser(root, params, context) {}
 async function updateUser(root, params, context) {}
 
 async function login(root, params, { mongoose, authSignature }) {
-    console.log('Types::User::login# Processing login mutation...');
-    const { email, password } = params;
-    const loginAction = createLoginAction({
-        userRepository: createMongooseRepository({
-            repositoryType: repositoriesTypes.User,
-            mongoose
-        })
-    });
+	console.log('Types::User::login# Processing login mutation...');
+	const { email, password } = params;
+	const loginAction = createLoginAction({
+		userRepository: createMongooseRepository({
+			repositoryType: repositoriesTypes.User,
+			mongoose
+		})
+	});
 
-    try {
-        const user = await loginAction({ email, password });
+	try {
+		const user = await loginAction({ email, password });
 
-        if (!user) {
-            throw Boom.notFound(`User ${email} not found`);
-        }
+		if (!user) {
+			throw Boom.notFound(`User ${email} not found`);
+		}
 
-        return {
-            user,
-            authToken: jwt.sign(user.id, authSignature)
-        };
-    } catch (error) {
-        throw Boom.unauthorized('Invalid credentials');
-    }
+		return {
+			user,
+			authToken: jwt.sign(user.id, authSignature)
+		};
+	} catch (error) {
+		throw Boom.unauthorized('Invalid credentials');
+	}
 }
 
 async function logout(root, params, context) {}
 
 const resolvers = {
-    type: {
-        id: root => root._id || root.id,
-        playlists: (root, args, { mongoose }) => {
-            const getUserPlaylistsAction = createGetUserPlaylistsAction({
-                playlistRepository: createMongooseRepository({
-                    repositoryType: repositoriesTypes.Playlist,
-                    mongoose
-                })
-            });
+	type: {
+		id: root => root._id || root.id,
+		playlists: (root, args, { mongoose }) => {
+			const getUserPlaylistsAction = createGetUserPlaylistsAction({
+				playlistRepository: createMongooseRepository({
+					repositoryType: repositoriesTypes.Playlist,
+					mongoose
+				})
+			});
 
-            return getUserPlaylistsAction({
-                userEmail: root.email
-            });
-        }
-    },
-    queries: {
-        getUser
-    },
-    mutations: {
-        createUser,
-        updateUser,
-        login,
-        logout
-    }
+			return getUserPlaylistsAction({
+				userEmail: root.email
+			});
+		}
+	},
+	queries: {
+		getUser
+	},
+	mutations: {
+		createUser,
+		updateUser,
+		login,
+		logout
+	}
 };
 
 module.exports = {
-    typeName,
-    typeDefinition,
-    resolvers
+	typeName,
+	typeDefinition,
+	resolvers
 };

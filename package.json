@@ -4,7 +4,7 @@
   "description": "Colton music app back-end API",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --inspect ./src/server.js"
+    "start": "nodemon --inspect ./src/index.js"
   },
   "author": "Paquitosoft",
   "license": "ISC",

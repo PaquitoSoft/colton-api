@@ -1,4 +1,11 @@
 const { gql } = require("apollo-server");
+
+const createGetUserPlaylistsAction = require('../../../application/actions/playlist/get-user-playlists');
+const {
+	repositoriesTypes,
+	createMongooseRepository
+} = require('../../../adapters/repositories/repositories-factory');
+
 /*
 {
     "_id": {
@@ -36,6 +43,7 @@ const typeDefinition = gql`
 
     extend type Query {
         getPlaylist(playlistId: ID!): Playlist
+		getPlaylistsByUser: [Playlist]
     }
 
     extend type Mutation {
@@ -49,6 +57,22 @@ const typeDefinition = gql`
 `;
 
 async function getPlaylist(root, params, context) {}
+function getPlaylistsByUser(root, params, context) {
+	console.log('Types::Paylist::getPlaylist by user...');
+	const { user, mongoose } = context;
+	const playlistRepository = createMongooseRepository({
+		repositoryType: repositoriesTypes.Playlist,
+		mongoose
+	});
+	const getUserPlaylistsAction = createGetUserPlaylistsAction({
+		playlistRepository: createMongooseRepository({
+			repositoryType: repositoriesTypes.Playlist,
+			mongoose
+		})
+	});
+
+	return getUserPlaylistsAction({ userEmail: user.email });
+}
 
 async function createPlaylist(root, params, context) {}
 async function updatePlaylist(root, params, context) {}
@@ -58,24 +82,25 @@ async function removeTrackFromPlaylist(root, params, context) {}
 async function sharePlaylist(root, params, context) {}
 
 const resolvers = {
-    type: {
-        id: root => root._id || root.id
-    },
-    queries: {
-        getPlaylist
-    },
-    mutations: {
-        createPlaylist,
-        updatePlaylist,
-        removePlaylist,
-        addTrackToPlaylist,
-        removeTrackFromPlaylist,
-        sharePlaylist
-    }
+	type: {
+		id: root => root._id || root.id
+	},
+	queries: {
+		getPlaylist,
+		getPlaylistsByUser
+	},
+	mutations: {
+		createPlaylist,
+		updatePlaylist,
+		removePlaylist,
+		addTrackToPlaylist,
+		removeTrackFromPlaylist,
+		sharePlaylist
+	}
 };
 
 module.exports = {
-    typeName,
-    typeDefinition,
-    resolvers
+	typeName,
+	typeDefinition,
+	resolvers
 };
