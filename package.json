@@ -4,13 +4,14 @@
   "description": "Colton music app back-end API",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --inspect ./src/index.js"
+    "start": "DEBUG=* nodemon --inspect ./src/index.js"
   },
   "author": "Paquitosoft",
   "license": "ISC",
   "dependencies": {
     "@hapi/boom": "^7.4.2",
     "apollo-server": "^2.5.0",
+    "debug": "^4.1.1",
     "graphql": "^14.1.1",
     "graphql-middleware": "^3.0.2",
     "graphql-tools": "^4.0.4",

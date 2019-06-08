@@ -1,3 +1,5 @@
+const log = require('debug')('colton:AppEntryPoint');
+
 const { createServer } = require('./infrastructure/webserver/graphql-server');
 const { connectToMongo } = require('./infrastructure/database/mongoose');
 
@@ -9,25 +11,25 @@ const AUTH_SIGNATURE = process.env.COLTON_AUTH_SIGNATURE || 'fjasdfhjdgsfjasdfjg
 
 async function start() {
 
-    try {
-        const mongoose = await connectToMongo(MONGO_URL);
-        const server = createServer({
-            mongoose,
-            authSignature: AUTH_SIGNATURE
-        });
+	try {
+		const mongoose = await connectToMongo(MONGO_URL);
+		const server = createServer({
+			mongoose,
+			authSignature: AUTH_SIGNATURE
+		});
 
-        const {
-            url,
-            subscriptionsPath
-        } = await server.listen({ port: SERVER_LISTENING_PORT });
+		const {
+			url,
+			subscriptionsPath
+		} = await server.listen({ port: SERVER_LISTENING_PORT });
 
-        console.log('Application started!');
-        console.log('Listening URL:', url);
-        console.log('Subscription path:', subscriptionsPath);
-    } catch (error) {
-        console.error('Could not start application:', error);
-        throw error;
-    }
+		log('Application started!');
+		log('Listening URL:', url);
+		log('Subscription path:', subscriptionsPath);
+	} catch (error) {
+		log('Could not start application:', error);
+		throw error;
+	}
 }
 
 start();

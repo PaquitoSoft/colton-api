@@ -1,6 +1,7 @@
 const { gql } = require("apollo-server");
 const Boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
+const log = require('debug')('colton:Types:User');
 
 const createLoginAction = require('../../../application/actions/user/login');
 const createGetUserPlaylistsAction = require('../../../application/actions/playlist/get-user-playlists');
@@ -80,7 +81,7 @@ async function createUser(root, params, context) {}
 async function updateUser(root, params, context) {}
 
 async function login(root, params, { mongoose, authSignature }) {
-	console.log('Types::User::login# Processing login mutation...');
+	log('login# Processing login mutation...');
 	const { email, password } = params;
 	const loginAction = createLoginAction({
 		userRepository: createMongooseRepository({

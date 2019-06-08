@@ -2,36 +2,36 @@ const { encrypt, encryptPassword } = require('../adapter-helpers');
 const { buildUserSchema } = require('./mongoose-schemas/user-schema');
 
 class UserMongooseRepository {
-    constructor(mongoose) {
-        this.UserModel = mongoose.model('User', buildUserSchema(mongoose.Schema));
-    }
+	constructor(mongoose) {
+		this.UserModel = mongoose.model('User', buildUserSchema(mongoose.Schema));
+	}
 
-    validateCredentials(username, password) {
-        return this.UserModel.validateCredentials(username, password);
-    }
+	validateCredentials(username, password) {
+		return this.UserModel.validateCredentials(username, password);
+	}
 
-    isMailAlreadyInUse(email) {
-        return this.UserModel.isMailAlreadyInUse(email);
-    }
+	isMailAlreadyInUse(email) {
+		return this.UserModel.isMailAlreadyInUse(email);
+	}
 
-    createUser(user) {
-        user.salt = encrypt(`${Date.now()}--${user.password}`);
-        user.password = encryptPassword(user.password, user.salt);
+	createUser(user) {
+		user.salt = encrypt(`${Date.now()}--${user.password}`);
+		user.password = encryptPassword(user.password, user.salt);
 
-        const model = new this.UserModel(user);
+		const model = new this.UserModel(user);
 
-        return model.save();
-    }
+		return model.save();
+	}
 
-    updateUser(user) {
-        const model = new this.UserModel(user);
+	updateUser(user) {
+		const model = new this.UserModel(user);
 
-        return model.update();
-    }
+		return model.update();
+	}
 
-    getUser(userId) {
-        return this.UserModel.findById(userId);
-    }
+	getUser(userId) {
+		return this.UserModel.findById(userId);
+	}
 }
 
 module.exports = UserMongooseRepository;

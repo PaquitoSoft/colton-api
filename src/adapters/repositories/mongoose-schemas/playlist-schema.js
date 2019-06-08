@@ -24,30 +24,30 @@
 }
 */
 function buildPlaylistSchema(MongooseSchema) {
-    const playlistSchema = new MongooseSchema({
-        // id: ID!
-        name: { type: String, required: true },
-        owner: { type: String, required: true },
-        creationDate: { type: Date, required: true, 'default': Date.now() },
-        position: { type: Number, required: true, 'default': -1 },
-        playbacks: { type: Number, required: false, 'default': 0 },
-        tracks: [
-            {
-                externalId: { type: String, required: true },
-                title: { type: String, required: true },
-                duration: { type: String, required: true },
-                position: { type: Number, required: true, 'default': -1 }
-            }
-        ]
-    });
+	const playlistSchema = new MongooseSchema({
+		// id: ID!
+		name: { type: String, required: true },
+		owner: { type: String, required: true },
+		creationDate: { type: Date, required: true, 'default': Date.now() },
+		position: { type: Number, required: true, 'default': -1 },
+		playbacks: { type: Number, required: false, 'default': 0 },
+		tracks: [
+			{
+				externalId: { type: String, required: true },
+				title: { type: String, required: true },
+				duration: { type: String, required: true },
+				position: { type: Number, required: true, 'default': -1 }
+			}
+		]
+	});
 
-    playlistSchema.statics.getUserPlaylists = function getUserPlaylists(userEmail) { 
-        return this.find({ owner: userEmail })
-            .sort({ playbacks: -1 })
-            .exec();
-    };
+	playlistSchema.statics.getUserPlaylists = function getUserPlaylists(userEmail) {
+		return this.find({ owner: userEmail })
+			.sort({ playbacks: -1 })
+			.exec();
+	};
 
-    return playlistSchema;
+	return playlistSchema;
 }
 
 module.exports.buildPlaylistSchema = buildPlaylistSchema;

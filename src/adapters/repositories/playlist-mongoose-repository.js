@@ -1,13 +1,13 @@
 const { buildPlaylistSchema } = require('./mongoose-schemas/playlist-schema');
 
 class PlaylistMongooseRepository {
-    constructor(mongoose) {
-        this.PlaylistModel = mongoose.model('Playlist', buildPlaylistSchema(mongoose.Schema));
-    }
+	constructor(mongoose) {
+		this.PlaylistModel = mongoose.model('Playlist', buildPlaylistSchema(mongoose.Schema));
+	}
 
-    getUserPlaylists(userEmail) {
-        return this.PlaylistModel.getUserPlaylists(userEmail);
-    }
+	getUserPlaylists(userEmail) {
+		return this.PlaylistModel.getUserPlaylists(userEmail);
+	}
 
 }
 

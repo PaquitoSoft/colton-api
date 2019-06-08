@@ -1,6 +1,8 @@
 const { ApolloServer } = require('apollo-server');
 const { makeExecutableSchema } = require('graphql-tools');
 const { applyMiddleware } = require('graphql-middleware');
+const log = require('debug')('colton:GraphQLServer');
+
 const { createAuthMiddleware } = require('./middlewares/authentication');
 const types = require('./types');
 
@@ -24,7 +26,7 @@ module.exports.createServer = function createServer({ mongoose, authSignature })
 		schema: schemaWithMiddlewares,
 		debug: true,
 		context: ({ req }) => {
-			console.log('Building context...');
+			log('Building context...');
 			const authToken = req.headers.authorization;
 
 			return {
@@ -34,19 +36,19 @@ module.exports.createServer = function createServer({ mongoose, authSignature })
 			};
 		},
 		formatError: error => {
-			console.warn(error);
+			log(error);
 			// console.warn(Object.keys(error.extensions.exception));
 			// console.warn(error.extensions.exception.name);
 			// console.warn(error.extensions.exception.message);
-			console.warn(error.extensions.exception.stacktrace);
+			log(error.extensions.exception.stacktrace);
 			return error;
 		},
 		formatResponse: (response, query) => {
-			console.info('formatResponse::GraphQL query and variables', {
+			log('formatResponse::GraphQL query and variables', {
 				query: query.queryString,
 				vars: query.variables
 			});
-			console.log('formatResponse::Query keys:', Object.keys(query));
+			log('formatResponse::Query keys:', Object.keys(query));
 			return response;
 		}
 	});
