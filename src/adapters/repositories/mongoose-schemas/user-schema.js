@@ -26,6 +26,16 @@ function buildUserSchema(MongooseSchema) {
 		preferredAudioQuality: String
 	});
 
+	userSchema.pre('save', next => {
+		if (this.isNew) {
+			// Encrypt password
+			this.salt = encrypt(`${(new Date()).getTime()}--${this.password}`);
+			this.password = encryptPassword(this.password, this.salt);
+		}
+
+		next();
+	});
+
 	userSchema.statics.isMailAlreadyInUse = async email => {
 		const existingUser = await this.findOne({ email: new RegExp(email, 'iu') }).exec();
 
