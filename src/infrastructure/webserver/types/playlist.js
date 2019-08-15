@@ -2,6 +2,7 @@ const { gql } = require("apollo-server");
 const log = require('debug')('colton:Types:Paylist');
 
 const createGetUserPlaylistsAction = require('../../../application/actions/playlist/get-user-playlists');
+const createGetPlaylistAction = require('../../../application/actions/playlist/get-playlist');
 const {
 	repositoriesTypes,
 	createMongooseRepository
@@ -56,7 +57,22 @@ const typeDefinition = gql`
     }
 `;
 
-async function getPlaylist(root, params, context) {}
+function getPlaylist(root, params, context) {
+	log('getPlaylist details...');
+	const { user, mongoose } = context;
+	const getPlaylistAction = createGetPlaylistAction({
+		playlistRepository: createMongooseRepository({
+			repositoryType: repositoriesTypes.Playlist,
+			mongoose
+		})
+	});
+
+	return getPlaylistAction({
+		playlistId: params.playlistId,
+		userEmail: user.email
+	});
+}
+
 function getPlaylistsByUser(root, params, context) {
 	log('getPlaylist by user...');
 	const { user, mongoose } = context;

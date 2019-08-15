@@ -9,6 +9,10 @@ class PlaylistMongooseRepository {
 		return this.PlaylistModel.getUserPlaylists(userEmail);
 	}
 
+	getPlaylist(playlistId) {
+		return this.PlaylistModel.findById(playlistId);
+	}
+
 }
 
 module.exports = PlaylistMongooseRepository;
