@@ -9,6 +9,9 @@
   },
   "author": "Paquitosoft",
   "license": "ISC",
+  "engines": {
+	  "node": "10.x"
+  },
   "dependencies": {
     "@hapi/boom": "^7.4.2",
     "apollo-server": "^2.5.0",

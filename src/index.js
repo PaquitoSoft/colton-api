@@ -5,8 +5,8 @@ const { connectToMongo } = require('./infrastructure/database/mongoose');
 
 // TODO: Read from env config file
 const DEFAULT_PORT_NUMBER = 4000;
-const MONGO_URL = process.env.COLTON_MONGODB_URL || 'mongodb://colton2:DStoma23@ds029817.mongolab.com:29817/colton-dev';
-const SERVER_LISTENING_PORT = process.env.COLTON_LISTENING_PORT || DEFAULT_PORT_NUMBER;
+const MONGO_URL = process.env.COLTON_MONGODB_URL;
+const SERVER_LISTENING_PORT = process.env.COLTON_LISTENING_PORT || process.env.PORT || DEFAULT_PORT_NUMBER;
 const AUTH_SIGNATURE = process.env.COLTON_AUTH_SIGNATURE || 'fjasdfhjdgsfjasdfjgsadfhdvschkjas';
 
 async function start() {
