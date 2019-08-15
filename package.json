@@ -4,14 +4,14 @@
   "description": "Colton music app back-end API",
   "main": "index.js",
   "scripts": {
-	"debug": "DEBUG=* nodemon --inspect ./src/index.js",
-	"start": "node ./src/index.js",
-	"test": "echo TODO: implement tests"
+    "debug": "DEBUG=* nodemon --inspect ./src/index.js",
+    "start": "node ./src/index.js",
+    "test": "echo TODO: implement tests"
   },
   "author": "Paquitosoft",
   "license": "ISC",
   "engines": {
-	  "node": "10.x"
+    "node": "10.x"
   },
   "dependencies": {
     "@hapi/boom": "^7.4.2",
@@ -27,6 +27,6 @@
   },
   "devDependencies": {
     "eslint": "^5.15.2",
-    "nodemon": "^1.18.11"
+    "nodemon": "^1.19.1"
   }
 }
