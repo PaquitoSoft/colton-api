@@ -4,7 +4,8 @@
   "description": "Colton music app back-end API",
   "main": "index.js",
   "scripts": {
-	"start": "DEBUG=* nodemon --inspect ./src/index.js",
+	"debug": "DEBUG=* nodemon --inspect ./src/index.js",
+	"start": "node ./src/index.js",
 	"test": "echo TODO: implement tests"
   },
   "author": "Paquitosoft",
