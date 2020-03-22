@@ -70,7 +70,7 @@
         "eqeqeq": "error",
         "func-call-spacing": "error",
         "func-name-matching": "error",
-        "func-names": "error",
+        "func-names": "off",
         "function-paren-newline": "error",
         "generator-star-spacing": "error",
         "global-require": "off",

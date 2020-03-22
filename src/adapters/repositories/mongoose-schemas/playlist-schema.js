@@ -41,6 +41,10 @@ function buildPlaylistSchema(MongooseSchema) {
 		]
 	});
 
+	playlistSchema.virtual('tracksCount').get(function() {
+		return this.tracks.length;
+	});
+
 	playlistSchema.statics.getUserPlaylists = function getUserPlaylists(userEmail) {
 		return this.find({ owner: userEmail })
 			.sort({ playbacks: -1 })

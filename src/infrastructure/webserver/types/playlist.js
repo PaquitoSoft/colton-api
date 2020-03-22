@@ -29,6 +29,7 @@ const typeDefinition = gql`
         id: ID!
         creationDate: DateTime!
         name: String!
+		tracksCount: Int!
         tracks: [Track]
         position: Int!
     }
