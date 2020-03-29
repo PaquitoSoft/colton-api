@@ -1,6 +1,6 @@
 const Boom = require('@hapi/boom');
 
-const createGetPlaylist = ({ playlistRepository, favoriteTracksRepository }) => async ({ playlistId, userEmail }) => {
+const createGetPlaylist = ({ playlistRepository }) => async ({ playlistId, userEmail }) => {
 	const playlist = await playlistRepository.getPlaylist(playlistId);
 
 	if (!playlist) {
@@ -11,10 +11,13 @@ const createGetPlaylist = ({ playlistRepository, favoriteTracksRepository }) => 
 		throw Boom.unauthorized('This playlist is private');
 	}
 
-	const favoriteTracks = await favoriteTracksRepository.getUserFavoriteTracks({ userEmail, populateOnlyIds: true });
+	const favoritesPlaylist = await playlistRepository.getUserFavoritesPlaylist({
+		userEmail,
+		populateOnlyTrackIds: true
+	});
 
-	if (favoriteTracks && favoriteTracks.tracks.length > 0) {
-		const favoriteTrackExternalIds = favoriteTracks.tracks.map(favoriteTrack => favoriteTrack.externalId);
+	if (favoritesPlaylist && favoritesPlaylist.tracks.length > 0) {
+		const favoriteTrackExternalIds = favoritesPlaylist.tracks.map(favoriteTrack => favoriteTrack.externalId);
 		playlist.tracks.forEach(track => {
 			track.isFavorite = favoriteTrackExternalIds.includes(track.externalId);
 		});

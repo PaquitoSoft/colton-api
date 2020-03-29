@@ -31,6 +31,7 @@ function buildPlaylistSchema(MongooseSchema) {
 		creationDate: { type: Date, required: true, 'default': Date.now() },
 		position: { type: Number, required: true, 'default': -1 },
 		playbacks: { type: Number, required: false, 'default': 0 },
+		isFavoritesPlaylist: { type: Boolean, required: true, 'default': false },
 		tracks: [
 			{
 				externalId: { type: String, required: true },
@@ -46,9 +47,22 @@ function buildPlaylistSchema(MongooseSchema) {
 	});
 
 	playlistSchema.statics.getUserPlaylists = function getUserPlaylists(userEmail) {
-		return this.find({ owner: userEmail })
+		return this.find({ owner: userEmail, isFavoritesPlaylist: { $ne: true } })
 			.sort({ playbacks: -1 })
 			.exec();
+	};
+
+	playlistSchema.statics.getUserFavoritesPlaylist = function getUserFavoritesPlaylist({
+		userEmail,
+		populateOnlyTrackIds = false
+	}) {
+		const query = this.findOne({ owner: userEmail, isFavoritesPlaylist: true });
+
+		if (populateOnlyTrackIds) {
+			query.select('tracks.externalId');
+		}
+
+		return query.exec();
 	};
 
 	return playlistSchema;

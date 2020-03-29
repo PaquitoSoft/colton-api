@@ -1,8 +1,11 @@
 const { gql } = require("apollo-server");
 const log = require('debug')('colton:Types:Paylist');
 
-const createGetUserPlaylistsAction = require('../../../application/actions/playlist/get-user-playlists');
-const createGetPlaylistAction = require('../../../application/actions/playlist/get-playlist');
+const getUserPlaylistsActionBuilder = require('../../../application/actions/playlist/get-user-playlists');
+const getPlaylistActionBuilder = require('../../../application/actions/playlist/get-playlist');
+const getUserFavoritePlaylistBuilder = require('../../../application/actions/playlist/get-user-favorites-playlist');
+const toggleUserFavoriteTrackActionBuilder = require('../../../application/actions/playlist/toggle-user-favorite-track');
+
 const {
 	repositoriesTypes,
 	createMongooseRepository
@@ -43,9 +46,19 @@ const typeDefinition = gql`
 		position: Int
 	}
 
+	input FavoriteTrack {
+		id: ID
+		externalId: String!
+		title: String!
+		duration: String!
+		rating: Int
+		isFavorite: Boolean
+	}
+
 	extend type Query {
 		getPlaylist(playlistId: ID!): Playlist
 		getPlaylistsByUser: [Playlist]
+		getUserFavoritesPlaylist: Playlist
 	}
 
 	extend type Mutation {
@@ -54,25 +67,26 @@ const typeDefinition = gql`
 		removePlaylist(playlistId: ID!): Boolean
 		addTrackToPlaylist(track: NewTrack!): Playlist
 		removeTrackFromPlaylist(trackId: ID!): Playlist
+		toggleUserFavoriteTrack(track: FavoriteTrack!): Playlist
 		sharePlaylist(playlistId: ID!, emails: [String]!): Boolean
 	}
 `;
 
-function getPlaylist(root, params, context) {
-	log('getPlaylist details...');
-	const { user, mongoose } = context;
-	const getPlaylistAction = createGetPlaylistAction({
+function createAction(actionBuilder, mongoose) {
+	return actionBuilder({
 		playlistRepository: createMongooseRepository({
 			repositoryType: repositoriesTypes.Playlist,
 			mongoose
-		}),
-		favoriteTracksRepository: createMongooseRepository({
-			repositoryType: repositoriesTypes.FavoriteTracks,
-			mongoose
 		})
 	});
+}
 
-	return getPlaylistAction({
+function getPlaylist(root, params, context) {
+	log('getPlaylist details...');
+	const { user, mongoose } = context;
+	const action = createAction(getPlaylistActionBuilder, mongoose);
+
+	return action({
 		playlistId: params.playlistId,
 		userEmail: user.email
 	});
@@ -81,14 +95,29 @@ function getPlaylist(root, params, context) {
 function getPlaylistsByUser(root, params, context) {
 	log('getPlaylist by user...');
 	const { user, mongoose } = context;
-	const getUserPlaylistsAction = createGetUserPlaylistsAction({
-		playlistRepository: createMongooseRepository({
-			repositoryType: repositoriesTypes.Playlist,
-			mongoose
-		})
-	});
+	const action = createAction(getUserPlaylistsActionBuilder, mongoose);
 
-	return getUserPlaylistsAction({ userEmail: user.email });
+	return action({ userEmail: user.email });
+}
+
+function getUserFavoritesPlaylist(root, params, context) {
+	log('getPlaylist details...');
+	const { user, mongoose } = context;
+	const action = createAction(getUserFavoritePlaylistBuilder, mongoose);
+
+	return action({ userEmail: user.email });
+}
+
+function toggleUserFavoriteTrack(root, params, context) {
+	log('toggleUserFavoriteTrack...');
+	const { user, mongoose } = context;
+	const { track } = params;
+	const action = createAction(
+		toggleUserFavoriteTrackActionBuilder,
+		mongoose
+	);
+
+	return action({ userEmail: user.email, track });
 }
 
 async function createPlaylist(root, params, context) {}
@@ -104,7 +133,8 @@ const resolvers = {
 	},
 	queries: {
 		getPlaylist,
-		getPlaylistsByUser
+		getPlaylistsByUser,
+		getUserFavoritesPlaylist
 	},
 	mutations: {
 		createPlaylist,
@@ -112,6 +142,7 @@ const resolvers = {
 		removePlaylist,
 		addTrackToPlaylist,
 		removeTrackFromPlaylist,
+		toggleUserFavoriteTrack,
 		sharePlaylist
 	}
 };
