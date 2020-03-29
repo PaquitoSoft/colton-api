@@ -4,7 +4,8 @@ const types = [
 	require('./date-time'),
 	require('./user'),
 	require('./track'),
-	require('./playlist')
+	require('./playlist'),
+	require('./favorite-tracks')
 ];
 
 module.exports.getTypesDefinitions = () => [

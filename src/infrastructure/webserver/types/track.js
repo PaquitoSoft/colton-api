@@ -31,11 +31,12 @@ const typeDefinition = gql`
 		externalId: String!
 		title: String!
 		duration: String!
-		rating: Int!
+		isFavorite: Boolean
+		rating: Int
 	}
 
 	input NewTrack {
-		extarnalId: String!
+		externalId: String!
 		title: String!
 		duration: String!
 		rating: Int!

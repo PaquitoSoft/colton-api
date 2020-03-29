@@ -17,7 +17,7 @@
         "array-bracket-newline": "error",
         "array-bracket-spacing": "error",
         "array-callback-return": "error",
-        "arrow-body-style": "error",
+        "arrow-body-style": "off",
         "arrow-parens": [
             "error",
             "as-needed"
@@ -34,7 +34,7 @@
         "brace-style": "error",
         "callback-return": "error",
         "camelcase": "error",
-        "class-methods-use-this": "error",
+        "class-methods-use-this": "off",
         "comma-dangle": "off",
         "comma-spacing": [
             "error",
@@ -103,7 +103,7 @@
         "new-cap": "error",
         "new-parens": "error",
         "newline-after-var": [
-            "error",
+            "off",
             "always"
         ],
         "newline-before-return": "off",
@@ -140,7 +140,7 @@
         "no-lone-blocks": "error",
         "no-lonely-if": "error",
         "no-loop-func": "error",
-        "no-magic-numbers": "error",
+        "no-magic-numbers": "warn",
         "no-misleading-character-class": "error",
         "no-mixed-operators": "error",
         "no-mixed-requires": "error",

@@ -10,52 +10,52 @@ const {
 
 /*
 {
-    "_id": {
-        "$oid": "4f4e4054fb83390100000024"
-    },
-    "creationDate": {
-        "$date": "2012-02-29T15:12:20.000Z"
-    },
-    "name": "la musicalite",
-    "order": null,
-    "owner": "alexsandratm@gmail.com",
-    "position": 0,
-    "tracks": []
+	"_id": {
+		"$oid": "4f4e4054fb83390100000024"
+	},
+	"creationDate": {
+		"$date": "2012-02-29T15:12:20.000Z"
+	},
+	"name": "la musicalite",
+	"order": null,
+	"owner": "xxxx@gmail.com",
+	"position": 0,
+	"tracks": []
 */
 const typeName = 'Playlist';
 
 const typeDefinition = gql`
-    type Playlist {
-        id: ID!
-        creationDate: DateTime!
-        name: String!
+	type Playlist {
+		id: ID!
+		creationDate: DateTime!
+		name: String!
 		tracksCount: Int!
-        tracks: [Track]
-        position: Int!
-    }
+		tracks: [Track]
+		position: Int!
+	}
 
-    input NewPlaylist {
-        name: String!
-    }
+	input NewPlaylist {
+		name: String!
+	}
 
-    input UpdatePlaylist {
-        name: String
-        position: Int
-    }
+	input UpdatePlaylist {
+		name: String
+		position: Int
+	}
 
-    extend type Query {
-        getPlaylist(playlistId: ID!): Playlist
+	extend type Query {
+		getPlaylist(playlistId: ID!): Playlist
 		getPlaylistsByUser: [Playlist]
-    }
+	}
 
-    extend type Mutation {
-        createPlaylist(playlist: NewPlaylist): Playlist
-        updatePlaylist(playlist: UpdatePlaylist): Playlist
-        removePlaylist(playlistId: ID!): Boolean
-        addTrackToPlaylist(track: NewTrack!): Playlist
-        removeTrackFromPlaylist(trackId: ID!): Playlist
-        sharePlaylist(playlistId: ID!, emails: [String]!): Boolean
-    }
+	extend type Mutation {
+		createPlaylist(playlist: NewPlaylist): Playlist
+		updatePlaylist(playlist: UpdatePlaylist): Playlist
+		removePlaylist(playlistId: ID!): Boolean
+		addTrackToPlaylist(track: NewTrack!): Playlist
+		removeTrackFromPlaylist(trackId: ID!): Playlist
+		sharePlaylist(playlistId: ID!, emails: [String]!): Boolean
+	}
 `;
 
 function getPlaylist(root, params, context) {
@@ -64,6 +64,10 @@ function getPlaylist(root, params, context) {
 	const getPlaylistAction = createGetPlaylistAction({
 		playlistRepository: createMongooseRepository({
 			repositoryType: repositoriesTypes.Playlist,
+			mongoose
+		}),
+		favoriteTracksRepository: createMongooseRepository({
+			repositoryType: repositoriesTypes.FavoriteTracks,
 			mongoose
 		})
 	});

@@ -1,7 +1,7 @@
 /*
 {
     "name": "Tindersticks",
-    "owner": "javierfernandezsantiago@gmail.com",
+    "owner": "xxxxx@gmail.com",
     "_id": {
         "$oid": "50758147b7bad6b03400605d"
     },
