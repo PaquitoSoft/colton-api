@@ -1,16 +1,6 @@
-const Hashes = require('jshashes');
+const { encryptPassword } = require('../../../utils');
 
-// TODO: This is a global helper (move to another directory)
-function encrypt(text) {
-	const sha1Hash = new Hashes.SHA1();
-
-	return sha1Hash.b64(text);
-}
-
-function encryptPassword(password, salt) {
-	return encrypt(`${password}--${salt}`);
-}
-
+// eslint-disable-next-line max-lines-per-function
 function buildUserSchema(MongooseSchema) {
 	const userSchema = new MongooseSchema({
 		// id: ID!
@@ -26,17 +16,17 @@ function buildUserSchema(MongooseSchema) {
 		preferredAudioQuality: String
 	});
 
-	userSchema.pre('save', next => {
-		if (this.isNew) {
-			// Encrypt password
-			this.salt = encrypt(`${(new Date()).getTime()}--${this.password}`);
-			this.password = encryptPassword(this.password, this.salt);
-		}
+	// userSchema.pre('save', next => {
+	// 	if (this.isNew) {
+	// 		// Encrypt password
+	// 		this.salt = encrypt(`${(new Date()).getTime()}--${this.password}`);
+	// 		this.password = encryptPassword(this.password, this.salt);
+	// 	}
 
-		next();
-	});
+	// 	next();
+	// });
 
-	userSchema.statics.isMailAlreadyInUse = async email => {
+	userSchema.statics.isEmailAlreadyInUse = async function(email) {
 		const existingUser = await this.findOne({ email: new RegExp(email, 'iu') }).exec();
 
 		return Boolean(existingUser);
@@ -50,6 +40,10 @@ function buildUserSchema(MongooseSchema) {
 		}
 
 		return user;
+	};
+
+	userSchema.statics.findByEmail = function findByEmail(email) {
+		return this.findOne({ emailB: email.toUpperCase() });
 	};
 
 	return userSchema;

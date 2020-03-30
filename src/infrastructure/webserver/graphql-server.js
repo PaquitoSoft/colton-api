@@ -6,7 +6,7 @@ const log = require('debug')('colton:GraphQLServer');
 const { createAuthMiddleware } = require('./middlewares/authentication');
 const types = require('./types');
 
-module.exports.createServer = function createServer({ mongoose, authSignature }) {
+module.exports.createServer = function createServer({ mongoose, mailProvider, authSignature }) {
 	const schema = makeExecutableSchema({
 		typeDefs: types.getTypesDefinitions(),
 		resolvers: types.getTypesResolvers()
@@ -32,6 +32,7 @@ module.exports.createServer = function createServer({ mongoose, authSignature })
 			return {
 				authSignature,
 				mongoose,
+				mailProvider,
 				authToken
 			};
 		},

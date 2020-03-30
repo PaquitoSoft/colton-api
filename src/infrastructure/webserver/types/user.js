@@ -3,8 +3,10 @@ const Boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
 const log = require('debug')('colton:Types:User');
 
-const createLoginAction = require('../../../application/actions/user/login');
-const createGetUserPlaylistsAction = require('../../../application/actions/playlist/get-user-playlists');
+const createUserActionBuilder = require('../../../application/actions/user/create-user');
+const loginActionBuilder = require('../../../application/actions/user/login');
+const resetPasswordActionBuilder = require('../../../application/actions/user/reset-password');
+const getUserPlaylistsActionBuilder = require('../../../application/actions/playlist/get-user-playlists');
 const {
 	repositoriesTypes,
 	createMongooseRepository
@@ -59,7 +61,7 @@ const typeDefinition = gql`
         preferredAudioQuality: AudioQuality!
     }
 
-    type LoginResponse {
+    type LoggedUserResponse {
         user: User!,
         authToken: String!
     }
@@ -69,26 +71,49 @@ const typeDefinition = gql`
     }
 
     extend type Mutation {
-        createUser(user: NewUser): User
+        createUser(user: NewUser): LoggedUserResponse
         updateUser(user: UpdateUser): User
-        login(email: String!, password: String!): LoginResponse
+        login(email: String!, password: String!): LoggedUserResponse
         logout(accessToken: String!): Boolean
+		resetPassword(email: String!): Boolean
     }
 `;
 
 async function getUser(root, params, context) {}
-async function createUser(root, params, context) {}
+async function logout(root, params, context) {}
 async function updateUser(root, params, context) {}
+
+function createAction(actionBuilder, context) {
+	return actionBuilder({
+		userRepository: createMongooseRepository({
+			...context,
+			repositoryType: repositoriesTypes.User
+		})
+	});
+}
+
+async function createUser(root, params, { mongoose, authSignature }) {
+	const { user: userData } = params;
+	const action = createAction(createUserActionBuilder, { mongoose, authSignature });
+
+	const newUser = await action(userData);
+
+	return {
+		user: newUser,
+		authToken: jwt.sign(newUser.id, authSignature)
+	};
+}
 
 async function login(root, params, { mongoose, authSignature }) {
 	log('login# Processing login mutation...');
 	const { email, password } = params;
-	const loginAction = createLoginAction({
-		userRepository: createMongooseRepository({
-			repositoryType: repositoriesTypes.User,
-			mongoose
-		})
-	});
+	// const loginAction = createLoginAction({
+	// 	userRepository: createMongooseRepository({
+	// 		repositoryType: repositoriesTypes.User,
+	// 		mongoose
+	// 	})
+	// });
+	const loginAction = createAction(loginActionBuilder, { mongoose });
 
 	try {
 		const user = await loginAction({ email, password });
@@ -106,18 +131,25 @@ async function login(root, params, { mongoose, authSignature }) {
 	}
 }
 
-async function logout(root, params, context) {}
+function resetPassword(root, params, { mongoose }) {
+	const { email } = params;
+	const action = createAction(resetPasswordActionBuilder, { mongoose });
+
+	return action({ email });
+}
+
 
 const resolvers = {
 	type: {
 		id: root => root._id || root.id,
 		playlists: (root, args, { mongoose }) => {
-			const getUserPlaylistsAction = createGetUserPlaylistsAction({
-				playlistRepository: createMongooseRepository({
-					repositoryType: repositoriesTypes.Playlist,
-					mongoose
-				})
-			});
+			// const getUserPlaylistsAction = createGetUserPlaylistsAction({
+			// 	playlistRepository: createMongooseRepository({
+			// 		repositoryType: repositoriesTypes.Playlist,
+			// 		mongoose
+			// 	})
+			// });
+			const getUserPlaylistsAction = createAction(getUserPlaylistsActionBuilder, mongoose);
 
 			return getUserPlaylistsAction({
 				userEmail: root.email
@@ -130,6 +162,7 @@ const resolvers = {
 	mutations: {
 		createUser,
 		updateUser,
+		resetPassword,
 		login,
 		logout
 	}

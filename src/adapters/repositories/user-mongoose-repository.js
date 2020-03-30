@@ -10,27 +10,32 @@ class UserMongooseRepository {
 		return this.UserModel.validateCredentials(username, password);
 	}
 
-	isMailAlreadyInUse(email) {
-		return this.UserModel.isMailAlreadyInUse(email);
+	isEmailAlreadyInUse(email) {
+		return this.UserModel.isEmailAlreadyInUse(email);
 	}
 
-	createUser(user) {
-		user.salt = encrypt(`${Date.now()}--${user.password}`);
-		user.password = encryptPassword(user.password, user.salt);
-
-		const model = new this.UserModel(user);
+	createUser(userData) {
+		const salt = encrypt(`${Date.now()}--${userData.password}`);
+		const model = new this.UserModel({
+			...userData,
+			emailB: userData.email.toUpperCase(),
+			salt,
+			password: encryptPassword(userData.password, salt)
+		});
 
 		return model.save();
 	}
 
-	updateUser(user) {
-		const model = new this.UserModel(user);
-
-		return model.update();
+	updateUser(userModel) {
+		return userModel.update();
 	}
 
 	getUser(userId) {
 		return this.UserModel.findById(userId);
+	}
+
+	findByEmail(email) {
+		return this.UserModel.findByEmail(email);
 	}
 }
 

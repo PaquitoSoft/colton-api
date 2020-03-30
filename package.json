@@ -20,10 +20,11 @@
     "graphql": "^14.1.1",
     "graphql-middleware": "^3.0.2",
     "graphql-tools": "^4.0.4",
-    "jshashes": "^1.0.7",
+    "jshashes": "^1.0.8",
     "jsonwebtoken": "^8.5.0",
     "mongodb": "^3.1.13",
-    "mongoose": "^5.4.19"
+    "mongoose": "^5.4.19",
+    "nodemailer": "^6.4.6"
   },
   "devDependencies": {
     "eslint": "^5.15.2",

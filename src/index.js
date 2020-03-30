@@ -2,6 +2,7 @@ const log = require('debug')('colton:AppEntryPoint');
 
 const { createServer } = require('./infrastructure/webserver/graphql-server');
 const { connectToMongo } = require('./infrastructure/database/mongoose');
+const { MailProvider } = require('./infrastructure/mailing/mail-provider');
 
 // TODO: Read from env config file
 const DEFAULT_PORT_NUMBER = 4000;
@@ -13,8 +14,10 @@ async function start() {
 
 	try {
 		const mongoose = await connectToMongo(MONGO_URL);
+		const mailProvider = new MailProvider();
 		const server = createServer({
 			mongoose,
+			mailProvider,
 			authSignature: AUTH_SIGNATURE
 		});
 
