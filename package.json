@@ -17,6 +17,7 @@
     "@hapi/boom": "^7.4.2",
     "apollo-server": "^2.5.0",
     "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
     "graphql": "^14.1.1",
     "graphql-middleware": "^3.0.2",
     "graphql-tools": "^4.0.4",

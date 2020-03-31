@@ -27,7 +27,7 @@ class UserMongooseRepository {
 	}
 
 	updateUser(userModel) {
-		return userModel.update();
+		return userModel.save();
 	}
 
 	getUser(userId) {

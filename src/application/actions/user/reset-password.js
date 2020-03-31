@@ -23,7 +23,7 @@ const createResetPasswordAction = ({ userRepository, mailProvider }) => async ({
 	user = await userRepository.updateUser(user);
 
 	// Send an email to the user
-	mailProvider.sendResetPasswordEmail({
+	mailProvider.sendResetUserPasswordEmail({
 		userEmail: email,
 		newPassword
 	});

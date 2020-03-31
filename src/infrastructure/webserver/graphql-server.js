@@ -13,7 +13,7 @@ module.exports.createServer = function createServer({ mongoose, mailProvider, au
 	});
 
 	const authenticationMiddleware = createAuthMiddleware({
-		publicOpertions: ['login', 'createUser'],
+		publicOpertions: ['login', 'createUser', 'resetPassword'],
 		signature: authSignature
 	});
 

@@ -1,20 +1,28 @@
+require('dotenv').config();
 const log = require('debug')('colton:AppEntryPoint');
 
 const { createServer } = require('./infrastructure/webserver/graphql-server');
 const { connectToMongo } = require('./infrastructure/database/mongoose');
 const { MailProvider } = require('./infrastructure/mailing/mail-provider');
 
-// TODO: Read from env config file
-const DEFAULT_PORT_NUMBER = 4000;
 const MONGO_URL = process.env.COLTON_MONGODB_URL;
-const SERVER_LISTENING_PORT = process.env.COLTON_LISTENING_PORT || process.env.PORT || DEFAULT_PORT_NUMBER;
-const AUTH_SIGNATURE = process.env.COLTON_AUTH_SIGNATURE || 'fjasdfhjdgsfjasdfjgsadfhdvschkjas';
+const SERVER_LISTENING_PORT = process.env.COLTON_LISTENING_PORT || process.env.PORT;
+const AUTH_SIGNATURE = process.env.COLTON_AUTH_SIGNATURE;
+const MAIL_HOST = process.env.COLTON_MAIL_HOST;
+const MAIL_PORT = process.env.COLTON_MAIL_PORT;
+const MAIL_USERNAME = process.env.COLTON_MAIL_USER;
+const MAIL_PASSWORD = process.env.COLTON_MAIL_PASS;
 
 async function start() {
 
 	try {
 		const mongoose = await connectToMongo(MONGO_URL);
-		const mailProvider = new MailProvider();
+		const mailProvider = new MailProvider({
+			host: MAIL_HOST,
+			port: MAIL_PORT,
+			username: MAIL_USERNAME,
+			password: MAIL_PASSWORD
+		});
 		const server = createServer({
 			mongoose,
 			mailProvider,

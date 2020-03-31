@@ -83,18 +83,19 @@ async function getUser(root, params, context) {}
 async function logout(root, params, context) {}
 async function updateUser(root, params, context) {}
 
-function createAction(actionBuilder, context) {
+function createAction(actionBuilder, mongoose, context = {}) {
 	return actionBuilder({
+		...context,
 		userRepository: createMongooseRepository({
-			...context,
-			repositoryType: repositoriesTypes.User
+			repositoryType: repositoriesTypes.User,
+			mongoose
 		})
 	});
 }
 
 async function createUser(root, params, { mongoose, authSignature }) {
 	const { user: userData } = params;
-	const action = createAction(createUserActionBuilder, { mongoose, authSignature });
+	const action = createAction(createUserActionBuilder, mongoose);
 
 	const newUser = await action(userData);
 
@@ -107,13 +108,7 @@ async function createUser(root, params, { mongoose, authSignature }) {
 async function login(root, params, { mongoose, authSignature }) {
 	log('login# Processing login mutation...');
 	const { email, password } = params;
-	// const loginAction = createLoginAction({
-	// 	userRepository: createMongooseRepository({
-	// 		repositoryType: repositoriesTypes.User,
-	// 		mongoose
-	// 	})
-	// });
-	const loginAction = createAction(loginActionBuilder, { mongoose });
+	const loginAction = createAction(loginActionBuilder, mongoose);
 
 	try {
 		const user = await loginAction({ email, password });
@@ -131,11 +126,13 @@ async function login(root, params, { mongoose, authSignature }) {
 	}
 }
 
-function resetPassword(root, params, { mongoose }) {
+async function resetPassword(root, params, { mongoose, mailProvider }) {
 	const { email } = params;
-	const action = createAction(resetPasswordActionBuilder, { mongoose });
+	const action = createAction(resetPasswordActionBuilder, mongoose, { mailProvider });
 
-	return action({ email });
+	await action({ email });
+
+	return true;
 }
 
 
@@ -143,12 +140,6 @@ const resolvers = {
 	type: {
 		id: root => root._id || root.id,
 		playlists: (root, args, { mongoose }) => {
-			// const getUserPlaylistsAction = createGetUserPlaylistsAction({
-			// 	playlistRepository: createMongooseRepository({
-			// 		repositoryType: repositoriesTypes.Playlist,
-			// 		mongoose
-			// 	})
-			// });
 			const getUserPlaylistsAction = createAction(getUserPlaylistsActionBuilder, mongoose);
 
 			return getUserPlaylistsAction({

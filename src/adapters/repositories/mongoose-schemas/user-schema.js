@@ -11,6 +11,7 @@ function buildUserSchema(MongooseSchema) {
 		password: String,
 		salt: String,
 		email: String,
+		emailB: String,
 		nickname: String,
 		role: String,
 		preferredAudioQuality: String
