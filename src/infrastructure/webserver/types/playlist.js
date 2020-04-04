@@ -8,6 +8,7 @@ const toggleUserFavoriteTrackActionBuilder = require('../../../application/actio
 const addTrackToPlaylistActionBuilder = require('../../../application/actions/playlist/add-track-to-playlist');
 const removeTrackFromPlaylistActionBuilder = require('../../../application/actions/playlist/remove-track-from-playlist');
 const createPlaylistActionBuilder = require('../../../application/actions/playlist/create-playlist');
+const removePlaylistActionBuilder = require('../../../application/actions/playlist/remove-playlist');
 
 const {
 	repositoriesTypes,
@@ -162,9 +163,21 @@ function createPlaylist(root, params, context) {
 	return action({ newPlaylist: playlist, userEmail: user.email });
 }
 
-async function updatePlaylist(root, params, context) {}
-async function removePlaylist(root, params, context) {}
-async function sharePlaylist(root, params, context) {}
+async function removePlaylist(root, params, context) {
+	log('removePlaylist...');
+	const { user, mongoose } = context;
+	const { playlistId } = params;
+	const action = createAction(
+		removePlaylistActionBuilder,
+		mongoose
+	);
+
+	await action({ playlistId, userEmail: user.email });
+	return true;
+}
+
+function updatePlaylist() {}
+function sharePlaylist() {}
 
 const resolvers = {
 	type: {

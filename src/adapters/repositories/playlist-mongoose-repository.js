@@ -14,6 +14,10 @@ class PlaylistMongooseRepository {
 		return playlistModel.save();
 	}
 
+	removePlaylist(playlistModel) {
+		return playlistModel.remove();
+	}
+
 	getUserPlaylists(userEmail) {
 		return this.PlaylistModel.getUserPlaylists(userEmail);
 	}
