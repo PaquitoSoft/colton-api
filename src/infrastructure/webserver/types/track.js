@@ -32,6 +32,7 @@ const typeDefinition = gql`
 		title: String!
 		duration: String!
 		isFavorite: Boolean
+		thumbnailUrl: String
 		rating: Int
 	}
 
@@ -39,7 +40,8 @@ const typeDefinition = gql`
 		externalId: String!
 		title: String!
 		duration: String!
-		rating: Int!
+		thumbnailUrl: String
+		rating: Int
 	}
 `;
 

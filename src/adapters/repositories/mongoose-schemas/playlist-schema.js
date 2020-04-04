@@ -37,6 +37,7 @@ function buildPlaylistSchema(MongooseSchema) {
 				externalId: { type: String, required: true },
 				title: { type: String, required: true },
 				duration: { type: String, required: true },
+				thumbnailUrl: { type: String, required: false },
 				position: { type: Number, required: true, 'default': -1 }
 			}
 		]

@@ -5,6 +5,8 @@ const getUserPlaylistsActionBuilder = require('../../../application/actions/play
 const getPlaylistActionBuilder = require('../../../application/actions/playlist/get-playlist');
 const getUserFavoritePlaylistBuilder = require('../../../application/actions/playlist/get-user-favorites-playlist');
 const toggleUserFavoriteTrackActionBuilder = require('../../../application/actions/playlist/toggle-user-favorite-track');
+const addTrackToPlaylistActionBuilder = require('../../../application/actions/playlist/add-track-to-playlist');
+const removeTrackFromPlaylistActionBuilder = require('../../../application/actions/playlist/remove-track-from-playlist');
 
 const {
 	repositoriesTypes,
@@ -51,6 +53,7 @@ const typeDefinition = gql`
 		externalId: String!
 		title: String!
 		duration: String!
+		thumbnailUrl: String
 		rating: Int
 		isFavorite: Boolean
 	}
@@ -65,8 +68,8 @@ const typeDefinition = gql`
 		createPlaylist(playlist: NewPlaylist): Playlist
 		updatePlaylist(playlist: UpdatePlaylist): Playlist
 		removePlaylist(playlistId: ID!): Boolean
-		addTrackToPlaylist(track: NewTrack!): Playlist
-		removeTrackFromPlaylist(trackId: ID!): Playlist
+		addTrackToPlaylist(playlistId: ID!, track: NewTrack!): Playlist
+		removeTrackFromPlaylist(playlistId: ID!, trackId: ID!): Playlist
 		toggleUserFavoriteTrack(track: FavoriteTrack!): Playlist
 		sharePlaylist(playlistId: ID!, emails: [String]!): Boolean
 	}
@@ -120,11 +123,34 @@ function toggleUserFavoriteTrack(root, params, context) {
 	return action({ userEmail: user.email, track });
 }
 
+function addTrackToPlaylist(root, params, context) {
+	log('addTrackToPlaylist...');
+	const { user, mongoose } = context;
+	const { playlistId, track } = params;
+	const action = createAction(
+		addTrackToPlaylistActionBuilder,
+		mongoose
+	);
+
+	return action({ playlistId, newTrack: track, userEmail: user.email });
+}
+
+function removeTrackFromPlaylist(root, params, context) {
+	log('removeTrackToPlaylist...');
+	const { user, mongoose } = context;
+	const { playlistId, trackId } = params;
+	const action = createAction(
+		removeTrackFromPlaylistActionBuilder,
+		mongoose
+	);
+
+	return action({ playlistId, trackId, userEmail: user.email });
+}
+
+
 async function createPlaylist(root, params, context) {}
 async function updatePlaylist(root, params, context) {}
 async function removePlaylist(root, params, context) {}
-async function addTrackToPlaylist(root, params, context) {}
-async function removeTrackFromPlaylist(root, params, context) {}
 async function sharePlaylist(root, params, context) {}
 
 const resolvers = {
