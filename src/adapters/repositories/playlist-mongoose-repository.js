@@ -25,6 +25,10 @@ class PlaylistMongooseRepository {
 	getUserFavoritesPlaylist({ userEmail, populateOnlyTrackIds = false }) {
 		return this.PlaylistModel.getUserFavoritesPlaylist({ userEmail, populateOnlyTrackIds });
 	}
+
+	findPlaylistByName({ playlistName, userEmail }) {
+		return this.PlaylistModel.findPlaylistByName({ playlistName, userEmail });
+	}
 }
 
 module.exports = PlaylistMongooseRepository;

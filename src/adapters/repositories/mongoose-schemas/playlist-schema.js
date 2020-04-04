@@ -37,6 +37,7 @@ function buildPlaylistSchema(MongooseSchema) {
 				externalId: { type: String, required: true },
 				title: { type: String, required: true },
 				duration: { type: String, required: true },
+				length: { type: Number, required: true, 'default': 0 },
 				thumbnailUrl: { type: String, required: false },
 				position: { type: Number, required: true, 'default': -1 }
 			}
@@ -49,7 +50,7 @@ function buildPlaylistSchema(MongooseSchema) {
 
 	playlistSchema.statics.getUserPlaylists = function getUserPlaylists(userEmail) {
 		return this.find({ owner: userEmail, isFavoritesPlaylist: { $ne: true } })
-			.sort({ playbacks: -1 })
+			.sort({ creationDate: -1 })
 			.exec();
 	};
 
@@ -65,6 +66,10 @@ function buildPlaylistSchema(MongooseSchema) {
 
 		return query.exec();
 	};
+
+	playlistSchema.statics.findPlaylistByName = function findPlaylistByName({ playlistName, userEmail }) {
+		return this.findOne({ owner: userEmail, name: playlistName }).exec();
+	}
 
 	return playlistSchema;
 }

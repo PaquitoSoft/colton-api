@@ -7,6 +7,7 @@ const getUserFavoritePlaylistBuilder = require('../../../application/actions/pla
 const toggleUserFavoriteTrackActionBuilder = require('../../../application/actions/playlist/toggle-user-favorite-track');
 const addTrackToPlaylistActionBuilder = require('../../../application/actions/playlist/add-track-to-playlist');
 const removeTrackFromPlaylistActionBuilder = require('../../../application/actions/playlist/remove-track-from-playlist');
+const createPlaylistActionBuilder = require('../../../application/actions/playlist/create-playlist');
 
 const {
 	repositoriesTypes,
@@ -41,6 +42,7 @@ const typeDefinition = gql`
 
 	input NewPlaylist {
 		name: String!
+		tracks: [NewTrack]
 	}
 
 	input UpdatePlaylist {
@@ -52,7 +54,8 @@ const typeDefinition = gql`
 		id: ID
 		externalId: String!
 		title: String!
-		duration: String!
+		duration: String
+		length: Int
 		thumbnailUrl: String
 		rating: Int
 		isFavorite: Boolean
@@ -147,8 +150,18 @@ function removeTrackFromPlaylist(root, params, context) {
 	return action({ playlistId, trackId, userEmail: user.email });
 }
 
+function createPlaylist(root, params, context) {
+	log('createPlaylist...');
+	const { user, mongoose } = context;
+	const { playlist } = params;
+	const action = createAction(
+		createPlaylistActionBuilder,
+		mongoose
+	);
 
-async function createPlaylist(root, params, context) {}
+	return action({ newPlaylist: playlist, userEmail: user.email });
+}
+
 async function updatePlaylist(root, params, context) {}
 async function removePlaylist(root, params, context) {}
 async function sharePlaylist(root, params, context) {}

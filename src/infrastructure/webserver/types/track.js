@@ -30,7 +30,8 @@ const typeDefinition = gql`
 		id: ID!
 		externalId: String!
 		title: String!
-		duration: String!
+		duration: String
+		length: Int
 		isFavorite: Boolean
 		thumbnailUrl: String
 		rating: Int
@@ -39,7 +40,8 @@ const typeDefinition = gql`
 	input NewTrack {
 		externalId: String!
 		title: String!
-		duration: String!
+		duration: String
+		length: Int!
 		thumbnailUrl: String
 		rating: Int
 	}
