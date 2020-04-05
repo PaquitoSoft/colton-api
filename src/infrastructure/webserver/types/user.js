@@ -6,7 +6,9 @@ const log = require('debug')('colton:Types:User');
 const createUserActionBuilder = require('../../../application/actions/user/create-user');
 const loginActionBuilder = require('../../../application/actions/user/login');
 const resetPasswordActionBuilder = require('../../../application/actions/user/reset-password');
+const updateUserPasswordActionBuilder = require('../../../application/actions/user/update-user-password');
 const getUserPlaylistsActionBuilder = require('../../../application/actions/playlist/get-user-playlists');
+
 const {
 	repositoriesTypes,
 	createMongooseRepository
@@ -55,33 +57,22 @@ const typeDefinition = gql`
         password: String!
     }
 
-    input UpdateUser {
-        email: String!
-        nickname: String!
-        preferredAudioQuality: AudioQuality!
-    }
-
     type LoggedUserResponse {
         user: User!,
         authToken: String!
     }
 
-    extend type Query {
-        getUser(userId: ID!): User
-    }
-
     extend type Mutation {
         createUser(user: NewUser): LoggedUserResponse
-        updateUser(user: UpdateUser): User
+        updateUserPassword(newPassword: String!): User
         login(email: String!, password: String!): LoggedUserResponse
         logout(accessToken: String!): Boolean
 		resetPassword(email: String!): Boolean
     }
 `;
 
-async function getUser(root, params, context) {}
 async function logout(root, params, context) {}
-async function updateUser(root, params, context) {}
+
 
 function createAction(actionBuilder, mongoose, context = {}) {
 	return actionBuilder({
@@ -135,6 +126,12 @@ async function resetPassword(root, params, { mongoose, mailProvider }) {
 	return true;
 }
 
+function updateUserPassword(root, params, { mongoose, user }) {
+	const { newPassword } = params;
+	const action = createAction(updateUserPasswordActionBuilder, mongoose);
+
+	return action({ newPassword, userId: user.id });
+}
 
 const resolvers = {
 	type: {
@@ -147,12 +144,10 @@ const resolvers = {
 			});
 		}
 	},
-	queries: {
-		getUser
-	},
+	queries: {},
 	mutations: {
 		createUser,
-		updateUser,
+		updateUserPassword,
 		resetPassword,
 		login,
 		logout
