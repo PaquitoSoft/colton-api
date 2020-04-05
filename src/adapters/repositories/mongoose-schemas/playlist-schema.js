@@ -23,6 +23,7 @@
     }
 }
 */
+// eslint-disable-next-line max-lines-per-function
 function buildPlaylistSchema(MongooseSchema) {
 	const playlistSchema = new MongooseSchema({
 		// id: ID!
@@ -39,6 +40,7 @@ function buildPlaylistSchema(MongooseSchema) {
 				duration: { type: String, required: true },
 				length: { type: Number, required: true, 'default': 0 },
 				thumbnailUrl: { type: String, required: false },
+				isFavorite: { type: Boolean, required: true, 'default': false },
 				position: { type: Number, required: true, 'default': -1 }
 			}
 		]

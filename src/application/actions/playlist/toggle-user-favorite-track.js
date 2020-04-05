@@ -29,7 +29,7 @@ const toggleUserFavoriteTrack = ({ playlistRepository }) => async ({ userEmail, 
 		favoritesPlaylist.tracks = favoritesPlaylist.tracks
 			.filter(_track => _track.externalId !== track.externalId);
 	} else {
-		favoritesPlaylist.tracks.push(track);
+		favoritesPlaylist.tracks.push({ ...track, isFavorite: true });
 	}
 
 	return playlistRepository.updatePlaylist(favoritesPlaylist);
