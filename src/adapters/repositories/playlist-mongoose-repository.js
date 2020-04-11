@@ -30,6 +30,10 @@ class PlaylistMongooseRepository {
 		return this.PlaylistModel.getUserFavoritesPlaylist({ userEmail, populateOnlyTrackIds });
 	}
 
+	getUserPlaylistsWithTrack({ trackExternalId, userEmail }) {
+		return this.PlaylistModel.getUserPlaylistsWithTrack({ trackExternalId, userEmail });
+	}
+
 	findPlaylistByName({ playlistName, userEmail }) {
 		return this.PlaylistModel.findPlaylistByName({ playlistName, userEmail });
 	}

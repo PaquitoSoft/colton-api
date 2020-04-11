@@ -144,7 +144,6 @@ const resolvers = {
 			});
 		}
 	},
-	queries: {},
 	mutations: {
 		createUser,
 		updateUserPassword,

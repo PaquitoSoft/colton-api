@@ -33,6 +33,7 @@ const typeDefinition = gql`
 		duration: String
 		length: Int
 		isFavorite: Boolean
+		isDisabled: Boolean
 		thumbnailUrl: String
 		rating: Int
 	}

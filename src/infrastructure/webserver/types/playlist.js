@@ -9,6 +9,7 @@ const addTrackToPlaylistActionBuilder = require('../../../application/actions/pl
 const removeTrackFromPlaylistActionBuilder = require('../../../application/actions/playlist/remove-track-from-playlist');
 const createPlaylistActionBuilder = require('../../../application/actions/playlist/create-playlist');
 const removePlaylistActionBuilder = require('../../../application/actions/playlist/remove-playlist');
+const disableTrackActionBuilder = require('../../../application/actions/playlist/disable-track');
 
 const {
 	repositoriesTypes,
@@ -70,11 +71,11 @@ const typeDefinition = gql`
 
 	extend type Mutation {
 		createPlaylist(playlist: NewPlaylist): Playlist
-		updatePlaylist(playlist: UpdatePlaylist): Playlist
 		removePlaylist(playlistId: ID!): Boolean
 		addTrackToPlaylist(playlistId: ID!, track: NewTrack!): Playlist
 		removeTrackFromPlaylist(playlistId: ID!, trackId: ID!): Playlist
 		toggleUserFavoriteTrack(track: FavoriteTrack!): Playlist
+		notifyDisabledTrack(externalId: String!): Boolean
 		sharePlaylist(playlistId: ID!, emails: [String]!): Boolean
 	}
 `;
@@ -176,7 +177,16 @@ async function removePlaylist(root, params, context) {
 	return true;
 }
 
-function updatePlaylist() {}
+async function notifyDisabledTrack(root, params, context) {
+	log('notifyDisabledTrack...');
+	const { user, mongoose } = context;
+	const { externalId } = params;
+	const action = createAction(disableTrackActionBuilder, mongoose);
+
+	await action({ trackExternalId: externalId, userEmail: user.email });
+	return true;
+}
+
 function sharePlaylist() {}
 
 const resolvers = {
@@ -190,11 +200,11 @@ const resolvers = {
 	},
 	mutations: {
 		createPlaylist,
-		updatePlaylist,
 		removePlaylist,
 		addTrackToPlaylist,
 		removeTrackFromPlaylist,
 		toggleUserFavoriteTrack,
+		notifyDisabledTrack,
 		sharePlaylist
 	}
 };
