@@ -45,6 +45,7 @@ const typeDefinition = gql`
 		length: Int!
 		thumbnailUrl: String
 		rating: Int
+		isFavorite: Boolean
 	}
 `;
 
