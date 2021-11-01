@@ -160,7 +160,7 @@
         "no-octal-escape": "error",
         "no-param-reassign": "error",
         "no-path-concat": "error",
-        "no-plusplus": "warn",
+        "no-plusplus": "off",
         "no-process-exit": "error",
         "no-proto": "error",
         "no-prototype-builtins": "error",

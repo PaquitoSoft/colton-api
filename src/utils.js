@@ -16,7 +16,7 @@ function randomString(len) {
 
 	for (let index = 0; index < len; index++) {
 		const rnum = Math.floor(Math.random() * chars.length);
-		result += chars.substring(rnum, rnum + 1);
+		result += chars[rnum];
 	}
 
 	return result;

@@ -71,7 +71,8 @@ const typeDefinition = gql`
     }
 `;
 
-async function logout(root, params, context) {}
+// TODO: This use case is not implemented yet
+async function logout(/* root, params, context */) {}
 
 
 function createAction(actionBuilder, mongoose, context = {}) {

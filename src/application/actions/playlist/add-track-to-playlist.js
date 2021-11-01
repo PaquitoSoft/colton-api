@@ -11,7 +11,7 @@ const createAddTrackToPlaylist = ({ playlistRepository }) => async ({ playlistId
 		throw Boom.unauthorized('This playlist is private');
 	}
 
-	if (playlist.tracks.some(track => track.externalId === newTrack.externalId)) {
+	if (playlist.tracks.find(track => track.externalId === newTrack.externalId)) {
 		throw Boom.preconditionFailed('Song is already in the playlist');
 	}
 
