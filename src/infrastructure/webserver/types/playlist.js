@@ -61,6 +61,7 @@ const typeDefinition = gql`
 		thumbnailUrl: String
 		rating: Int
 		isFavorite: Boolean
+		isDisabled: Boolean
 	}
 
 	extend type Query {
